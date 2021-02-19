@@ -3,6 +3,7 @@
   "private": true,
   "version": "1.0.0",
   "scripts": {
+    "build": "remix build",
     "predeploy": "remix build",
     "deploy": "vercel",
     "start": "concurrently \"remix run\" \"vercel dev\""
