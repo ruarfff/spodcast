@@ -1,11 +1,16 @@
 import type { LinksFunction, LoaderFunction } from "@remix-run/react";
 import { Meta, Links, Scripts, useRouteData } from "@remix-run/react";
 import { Outlet } from "react-router-dom";
+import { Link } from "react-router-dom";
 
-import styles from "url:./styles/global.css";
+import tailwind from "css:./styles/tailwind.css";
+import styles from "css:./styles/global.css";
 
 export let links: LinksFunction = () => {
-  return [{ rel: "stylesheet", href: styles }];
+  return[
+    { rel: "stylesheet", href: tailwind },
+    { rel: "stylesheet", href: styles }
+  ];
 };
 
 export let loader: LoaderFunction = () => {
@@ -23,9 +28,17 @@ export default function App() {
         <Links />
       </head>
       <body>
-        <Outlet />
+        <div className="container mx-auto">
+          <Outlet />
+        </div>
 
         <footer>
+          <div>
+            <Link to="/gists">Gists</Link>
+          </div>
+          <div>
+            <Link to="/team">Team</Link>
+          </div>
           <p>This page was rendered at {data.date.toLocaleString()}</p>
         </footer>
         <Scripts />
