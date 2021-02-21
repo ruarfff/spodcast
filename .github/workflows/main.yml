@@ -15,7 +15,7 @@ jobs:
         with:
           access_token: ${{ github.token }}
 
-      - name: Install and cache dependencies
+      - name: Install and Cache Dependencies
         uses: actions/checkout@v2
       - uses: actions/cache@v1
         with:
@@ -23,18 +23,22 @@ jobs:
           key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
           restore-keys: |
             ${{ runner.os }}-node-
-      - name: Build Remix App
+
+      - name: Build App
         run: |
           npm ci
           npm run build
         env:
           REMIX_REGISTRY_TOKEN: ${{ secrets.REMIX_REGISTRY_TOKEN }}
-      - uses: actions/checkout@v2
-      - run: "sed -i 's/${REMIX_REGISTRY_TOKEN}/${REGISTRY_TOKEN}/' .npmrc"
+
+      - name: Immensely Hacky .npmrc rewrite for Firebase Deploy
+        run: 'rm .npmrc && echo //npm.remix.run/:_authToken=${REMIX_REGISTRY_TOKEN}\n@remix-run:registry=https://npm.remix.run'
         shell: bash
         env:
-          REGISTRY_TOKEN: ${{secrets.REMIX_REGISTRY_TOKEN}}
-      - uses: FirebaseExtended/action-hosting-deploy@v0
+          REMIX_REGISTRY_TOKEN: ${{secrets.REMIX_REGISTRY_TOKEN}}
+
+      - name: Deploy App
+        uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: '${{ secrets.GITHUB_TOKEN }}'
           firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_SPODCAST_CD96F }}'
