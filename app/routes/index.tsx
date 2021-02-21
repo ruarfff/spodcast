@@ -11,7 +11,7 @@ export let meta: MetaFunction = () => {
   };
 };
 
-export let loader: LoaderFunction = () => {
+export let loader: LoaderFunction = async () => {
   return { message: "this is awesome 😎" };
 };
 

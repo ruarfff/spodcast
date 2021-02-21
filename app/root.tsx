@@ -13,7 +13,7 @@ export let links: LinksFunction = () => {
   ];
 };
 
-export let loader: LoaderFunction = () => {
+export let loader: LoaderFunction = async () => {
   return { date: new Date() };
 };
 

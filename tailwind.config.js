@@ -1,6 +1,6 @@
 module.exports = {
     purge: ["./app/**/*.tsx", "./app/**/*.js", "./app/**/*.mdx"],
-    darkMode: false,
+    darkMode: "class",
     plugins: [
         require('@tailwindcss/typography'),
         require('@tailwindcss/forms'),

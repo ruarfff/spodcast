@@ -1,6 +1,4 @@
 node_modules/
 
-/app-build
+/build
 /public/build
-
-.vercel
