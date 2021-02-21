@@ -31,8 +31,8 @@ jobs:
         env:
           REMIX_REGISTRY_TOKEN: ${{ secrets.REMIX_REGISTRY_TOKEN }}
 
-      - name: Immensely Hacky .npmrc rewrite for Firebase Deploy
-        run: 'rm .npmrc && echo //npm.remix.run/:_authToken=${REMIX_REGISTRY_TOKEN}\n@remix-run:registry=https://npm.remix.run'
+      - name: Immensely Hacky .npmrc Rewrite for Firebase Deploy
+        run: 'rm .npmrc && echo "//npm.remix.run/:_authToken=${REMIX_REGISTRY_TOKEN}\n@remix-run:registry=https://npm.remix.run"'
         shell: bash
         env:
           REMIX_REGISTRY_TOKEN: ${{secrets.REMIX_REGISTRY_TOKEN}}
