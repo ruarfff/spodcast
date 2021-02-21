@@ -2,3 +2,8 @@ node_modules/
 
 /build
 /public/build
+
+.npmrc
+*.log
+*.cache
+.DS_Store
