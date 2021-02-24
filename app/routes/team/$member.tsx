@@ -10,12 +10,12 @@ interface User {
   name: string;
 }
 
-export let loader: Loader = ({ params }) => {
+export const loader: Loader = ({ params }) => {
   return fetch(`https://api.github.com/users/${params.member}`);
 };
 
-export default function TeamMember() {
-  let user = useRouteData<User>();
+export default function TeamMember(): JSX.Element {
+  const user = useRouteData<User>();
   return (
     <div>
       <h3>{user.name}</h3>

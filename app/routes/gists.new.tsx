@@ -7,18 +7,18 @@ import { Form, usePendingFormSubmit } from "@remix-run/react";
 // Add the action
 export const action: Action = async ({ request }) => {
     // Very important or else it won't work :)
-    let token = process.env.GITHUB_GISTS
+    const token = process.env.GITHUB_GISTS
     // in a real world scenario you'd want this token to be an environment
     // variable on your server, but as long as you only use it in this action, it
     // won't get included in the browser bundle.
 
     // When the form request posts here, this helper turns it into a FormData
-    let body = new URLSearchParams(await request.text());
+    const body = new URLSearchParams(await request.text());
 
     // pull off what we need from the form, note they are named the same thing
     // as the `<input/>` in the form.
-    let fileName = body.get("fileName") as string;
-    let content = body.get("content");
+    const fileName = body.get("fileName") as string;
+    const content = body.get("content");
 
     // Hit the GitHub API to create a gist
     await fetch("https://api.github.com/gists", {
@@ -58,8 +58,8 @@ export const action: Action = async ({ request }) => {
     );
   }
 
-export default function NewGist() {
-  let pendingForm = usePendingFormSubmit();
+export default function NewGist(): JSX.Element {
+  const pendingForm = usePendingFormSubmit();
 
   return (
     <div>

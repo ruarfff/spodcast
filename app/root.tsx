@@ -6,19 +6,19 @@ import { Link } from "react-router-dom";
 import tailwind from "css:./styles/tailwind.css";
 import styles from "css:./styles/global.css";
 
-export let links: LinksFunction = () => {
+export const links: LinksFunction = () => {
   return[
     { rel: "stylesheet", href: tailwind },
     { rel: "stylesheet", href: styles }
   ];
 };
 
-export let loader: LoaderFunction = async () => {
+export const loader: LoaderFunction = async () => {
   return { date: new Date() };
 };
 
-export default function App() {
-  let data = useRouteData();
+export default function App(): JSX.Element {
+  const data = useRouteData();
 
   return (
     <html lang="en">
@@ -34,6 +34,9 @@ export default function App() {
 
         <footer>
           <div>
+            <a href="/login">Login</a>
+          </div>
+          <div>
             <Link to="/gists">Gists</Link>
           </div>
           <div>
@@ -47,7 +50,7 @@ export default function App() {
   );
 }
 
-export function ErrorBoundary({ error }: { error: Error }) {
+export function ErrorBoundary({ error }: { error: Error }): JSX.Element {
   return (
     <html lang="en">
       <head>

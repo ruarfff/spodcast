@@ -20,8 +20,8 @@ interface Gist {
 // Load data for this route and define some caching headers so that when the
 // user navigates here multiple times it won't make the request more than once
 // per 300 seconds
-export let loader: Loader = async () => {
-  let res = await fetch("https://api.github.com/gists");
+export const loader: Loader = async () => {
+  const res = await fetch("https://api.github.com/gists");
   return json(await res.json(), {
     headers: {
       "Cache-Control": "max-age=300",
@@ -30,7 +30,7 @@ export let loader: Loader = async () => {
 };
 
 // The title and meta tags for the document's <head>
-export function meta({ data }: { data: Gist[] }) {
+export function meta({ data }: { data: Gist[] }): { title: string; description: string; } {
   return {
     title: "Public Gists",
     description: `View the latest ${data.length} gists from the public`,
@@ -39,16 +39,16 @@ export function meta({ data }: { data: Gist[] }) {
 
 // The HTTP headers for the server rendered request, just use the cache control
 // from the loader.
-export function headers({ loaderHeaders }: { loaderHeaders: Headers }) {
+export function headers({ loaderHeaders }: { loaderHeaders: Headers }): { "Cache-Control": string | null; } {
   return {
     "Cache-Control": loaderHeaders.get("Cache-Control"),
   };
 }
 
-export default function Gists() {
+export default function Gists(): JSX.Element {
   // useRouteData supports TypeScript generics so you can say what this hook
   // returns
-  let data = useRouteData<Gist[]>();
+  const data = useRouteData<Gist[]>();
   return (
     <div className="prose prose-indigo" role="list">
       <div>

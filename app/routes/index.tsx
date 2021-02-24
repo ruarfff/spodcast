@@ -4,19 +4,19 @@ import type {
 } from "@remix-run/react";
 import { useRouteData } from "@remix-run/react";
 
-export let meta: MetaFunction = () => {
+export const meta: MetaFunction = () => {
   return {
     title: "Remix Starter",
     description: "Welcome to remix!"
   };
 };
 
-export let loader: LoaderFunction = async () => {
+export const loader: LoaderFunction = async () => {
   return { message: "this is awesome 😎" };
 };
 
-export default function Index() {
-  let data = useRouteData();
+export default function Index(): JSX.Element {
+  const data = useRouteData();
 
   return (
     <div style={{ textAlign: "center", padding: 20 }}>

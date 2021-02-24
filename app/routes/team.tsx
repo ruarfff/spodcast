@@ -9,13 +9,13 @@ interface Member {
   login: string;
 }
 
-export let loader: Loader = () => {
+export const loader: Loader = () => {
   // you can point to whatever org you want, ofc
   return fetch("https://api.github.com/orgs/reacttraining/members");
 };
 
-export default function Team() {
-  let data = useRouteData<Member[]>();
+export default function Team(): JSX.Element {
+  const data = useRouteData<Member[]>();
 
   return (
     <div>

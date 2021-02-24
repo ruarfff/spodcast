@@ -1,6 +1,6 @@
 import React from "react";
 
-export default function TeamIndex() {
+export default function TeamIndex(): JSX.Element {
   return (
     <div>
       <h3>Team</h3>
