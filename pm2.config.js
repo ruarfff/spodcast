@@ -3,7 +3,7 @@ module.exports = {
     {
       name: "Firebase",
       script: "firebase emulators:start",
-      watch: ["remix.config.js", "app"],
+      watch: ["remix.config.js", "app", "src"],
       watch_options: {
         followSymlinks: false,
       },
