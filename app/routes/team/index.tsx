@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react'
 
 export default function TeamIndex(): JSX.Element {
   return (
@@ -8,5 +8,5 @@ export default function TeamIndex(): JSX.Element {
         Here we could show cool stats about the team or recent activity, etc.
       </p>
     </div>
-  );
-  }
+  )
+}

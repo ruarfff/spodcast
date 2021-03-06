@@ -1,24 +1,54 @@
-import type { LinksFunction, LoaderFunction } from "@remix-run/react";
-import { Meta, Links, Scripts, useRouteData } from "@remix-run/react";
-import { Outlet } from "react-router-dom";
-import { Link } from "react-router-dom";
+import React from 'react'
+import type { LinksFunction, LoaderFunction } from '@remix-run/react'
+import { Meta, Links, Scripts, useRouteData } from '@remix-run/react'
+import { Outlet } from 'react-router-dom'
+import { Link } from 'react-router-dom'
+import firebase from 'firebase/app'
+import 'firebase/auth'
 
-import tailwind from "css:./styles/tailwind.css";
-import styles from "css:./styles/global.css";
+import tailwind from 'css:./styles/tailwind.css'
+import styles from 'css:./styles/global.css'
 
 export const links: LinksFunction = () => {
-  return[
-    { rel: "stylesheet", href: tailwind },
-    { rel: "stylesheet", href: styles }
-  ];
-};
+  return [
+    { rel: 'stylesheet', href: tailwind },
+    { rel: 'stylesheet', href: styles },
+  ]
+}
 
 export const loader: LoaderFunction = async () => {
-  return { date: new Date() };
-};
+  return { date: new Date() }
+}
 
 export default function App(): JSX.Element {
-  const data = useRouteData();
+  const [fireApp, setFireApp] = React.useState<firebase.app.App>()
+  const [user, setUser] = React.useState<firebase.User>()
+
+  const data = useRouteData()
+
+  React.useEffect(() => {
+    fetch(`/__/firebase/init.json`).then((result): void => {
+      setFireApp(firebase.initializeApp(result.json()))
+    })
+  }, [])
+
+  React.useEffect(() => {
+    if (fireApp) {
+      try {
+        const auth = firebase.auth()
+
+        auth.onAuthStateChanged(() => {
+          if (auth.currentUser) {
+            setUser(auth.currentUser)
+          } else {
+            setUser(undefined)
+          }
+        })
+      } catch (err) {
+        console.error(err)
+      }
+    }
+  }, [fireApp])
 
   return (
     <html lang="en">
@@ -29,6 +59,8 @@ export default function App(): JSX.Element {
       </head>
       <body>
         <div className="container mx-auto">
+          {fireApp ? <p>Initialised</p> : <p>Not initialised</p>}
+          {user ? <p>{JSON.stringify(user)}</p> : <p>Not logged in</p>}
           <Outlet />
         </div>
 
@@ -47,7 +79,7 @@ export default function App(): JSX.Element {
         <Scripts />
       </body>
     </html>
-  );
+  )
 }
 
 export function ErrorBoundary({ error }: { error: Error }): JSX.Element {
@@ -70,5 +102,5 @@ export function ErrorBoundary({ error }: { error: Error }): JSX.Element {
         <Scripts />
       </body>
     </html>
-  );
+  )
 }
