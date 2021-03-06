@@ -3,7 +3,7 @@ import type { LinksFunction, LoaderFunction } from '@remix-run/react'
 import { Meta, Links, Scripts, useRouteData } from '@remix-run/react'
 import { Outlet } from 'react-router-dom'
 import { Link } from 'react-router-dom'
-import firebase from 'firebase/app'
+import firebase from 'firebase'
 import 'firebase/auth'
 
 import tailwind from 'css:./styles/tailwind.css'
@@ -61,7 +61,7 @@ export default function App(): JSX.Element {
         <div className="container mx-auto">
           {fireApp ? <p>Initialised</p> : <p>Not initialised</p>}
           {user ? <p>{JSON.stringify(user)}</p> : <p>Not logged in</p>}
-          <Outlet />
+          {fireApp ? <Outlet /> : <p>loading</p>}
         </div>
 
         <footer>
