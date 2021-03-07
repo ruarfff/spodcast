@@ -121,7 +121,7 @@ export default function Callback(): JSX.Element {
   const data = useRouteData()
 
   React.useEffect(() => {
-    firebase.auth().signInWithCustomToken(data.token)
+    if (data.token) firebase.auth().signInWithCustomToken(data.token)
   }, [data.token])
 
   if (data.err) {

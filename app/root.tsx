@@ -3,7 +3,7 @@ import type { LinksFunction, LoaderFunction } from '@remix-run/react'
 import { Meta, Links, Scripts, useRouteData } from '@remix-run/react'
 import { Outlet } from 'react-router-dom'
 import { Link } from 'react-router-dom'
-import firebase from 'firebase'
+import firebase from 'firebase/app'
 import 'firebase/auth'
 
 import tailwind from 'css:./styles/tailwind.css'
@@ -17,6 +17,20 @@ export const links: LinksFunction = () => {
 }
 
 export const loader: LoaderFunction = async () => {
+  if (process.env.NODE_ENV !== 'production') {
+    const config = {
+      apiKey: process.env.SPODCAST_FB_API_KEY,
+      authDomain: process.env.SPODCAST_FB_AUTH_DOMAIN,
+      projectId: process.env.SPODCAST_PROJECT_ID,
+      storageBucket: process.env.SPODCAST_STORAGE_BUCKET,
+      messagingSenderId: process.env.SPODCAST_MESSAGING_SENDER,
+      appId: process.env.SPODCAST_APP_ID,
+      measurementId: process.env.SPODCAST_MEASUREMENT_ID,
+    }
+
+    return { config, date: new Date() }
+  }
+
   return { date: new Date() }
 }
 
@@ -27,9 +41,13 @@ export default function App(): JSX.Element {
   const data = useRouteData()
 
   React.useEffect(() => {
-    fetch(`/__/firebase/init.json`).then((result): void => {
-      setFireApp(firebase.initializeApp(result.json()))
-    })
+    if (data.config) {
+      setFireApp(firebase.initializeApp(data.config))
+    } else {
+      fetch(`/__/firebase/init.json`).then((result): void => {
+        setFireApp(firebase.initializeApp(result.json()))
+      })
+    }
   }, [])
 
   React.useEffect(() => {
