@@ -14,31 +14,19 @@ if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'))
 }
 
-if (require.main === module) {
-  app.use(express.static('public'))
-  app.all(
-    '*',
-    createRequestHandler({
-      getLoadContext(req) {
-        return { req }
-      },
-    })
-  )
-
-  let port = process.env.PORT || 3000
-
-  app.listen(port, () => {
-    console.log(`Express server started on http://localhost:${port}`)
+app.all(
+  "*",
+  createRequestHandler({
+    build: require("./build"),
+    getLoadContext() {
+      // Whatever you return here will be passed as `context` to your loaders
+      // and actions.
+    }
   })
-} else {
-  app.all(
-    '*',
-    createRequestHandler({
-      getLoadContext(req) {
-        return { req }
-      },
-    })
-  )
-}
+);
 
-module.exports = app
+let port = process.env.PORT || 3000;
+
+app.listen(port, () => {
+  console.log(`Express server started on http://localhost:${port}`);
+});
