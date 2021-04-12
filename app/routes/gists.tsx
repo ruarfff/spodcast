@@ -1,6 +1,6 @@
 import React from 'react'
-import type { Loader } from '@remix-run/data'
-import { json } from '@remix-run/data'
+import type { LoaderFunction } from '@remix-run/node'
+import { json } from '@remix-run/node'
 import { useRouteData } from '@remix-run/react'
 
 interface Gist {
@@ -20,7 +20,7 @@ interface Gist {
 // Load data for this route and define some caching headers so that when the
 // user navigates here multiple times it won't make the request more than once
 // per 300 seconds
-export const loader: Loader = async () => {
+export const loader: LoaderFunction = async () => {
   const res = await fetch('https://api.github.com/gists')
   return json(await res.json(), {
     headers: {

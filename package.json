@@ -4,16 +4,16 @@
   "main": "src/functions.js",
   "version": "1.0.0",
   "scripts": {
-    "build": "remix build",
+    "postinstall": "npm run build",
+    "build": "remix build2",
     "deploy": "firebase deploy",
     "start": "pm2-dev pm2.config.js",
     "lint": "eslint . --fix"
   },
   "dependencies": {
-    "@remix-run/cli": "^0.13.1",
-    "@remix-run/data": "^0.13.1",
-    "@remix-run/express": "^0.13.1",
-    "@remix-run/react": "^0.13.1",
+    "@remix-run/express": "^0.15.3",
+    "@remix-run/node": "^0.15.3",
+    "@remix-run/react": "^0.15.3",
     "compression": "^1.7.4",
     "cookie-parser": "^1.4.5",
     "express": "^4.17.1",
@@ -30,6 +30,7 @@
     "spotify-web-api-node": "^5.0.2"
   },
   "devDependencies": {
+    "@remix-run/dev": "^0.15.3",
     "@tailwindcss/forms": "^0.2.1",
     "@tailwindcss/typography": "^0.4.0",
     "@types/react": "^17.0.1",
@@ -43,12 +44,14 @@
     "eslint-config-prettier": "^8.0.0",
     "eslint-plugin-prettier": "^3.3.1",
     "eslint-plugin-react": "^7.22.0",
+    "firebase-tools": "^9.9.0",
     "pm2": "^4.5.5",
     "postcss": "^8.2.6",
     "prettier": "^2.2.1",
     "tailwindcss": "^2.0.3",
     "typescript": "^4.1.2"
   },
+  "sideEffects": false,
   "engines": {
     "node": "14"
   }

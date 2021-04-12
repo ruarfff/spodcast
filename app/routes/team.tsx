@@ -1,14 +1,14 @@
 import React from 'react'
 import { Link, Outlet } from 'react-router-dom'
 import { useRouteData } from '@remix-run/react'
-import type { Loader } from '@remix-run/data'
+import type { LoaderFunction } from '@remix-run/node'
 
 interface Member {
   id: string
   login: string
 }
 
-export const loader: Loader = () => {
+export const loader: LoaderFunction = () => {
   // you can point to whatever org you want, ofc
   return fetch('https://api.github.com/orgs/reacttraining/members')
 }

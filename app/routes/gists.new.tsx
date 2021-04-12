@@ -1,11 +1,11 @@
 import React from 'react'
 
-import type { Action } from '@remix-run/data'
-import { redirect } from '@remix-run/data'
+import type { ActionFunction } from '@remix-run/node'
+import { redirect } from '@remix-run/node'
 import { Form, usePendingFormSubmit } from '@remix-run/react'
 
 // Add the action
-export const action: Action = async ({ request }) => {
+export const action: ActionFunction = async ({ request }) => {
   // Very important or else it won't work :)
   const token = process.env.GITHUB_GISTS
   // in a real world scenario you'd want this token to be an environment

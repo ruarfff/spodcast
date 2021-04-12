@@ -1,6 +1,6 @@
 const admin = require('firebase-admin')
 const functions = require('firebase-functions')
-const appServer = require('./server')
+const appServer = require('../server')
 
 if (process.env.NODE_ENV !== 'production') {
   const serviceAccount = require('../.creds/serviceAccountKey.json')

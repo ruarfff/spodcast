@@ -1,5 +1,5 @@
 import React from 'react'
-import { Loader, json } from '@remix-run/data'
+import { LoaderFunction, json } from '@remix-run/node'
 import { useRouteData } from '@remix-run/react'
 import admin from 'firebase-admin'
 import firebase from 'firebase/app'
@@ -60,7 +60,7 @@ async function createFirebaseAccount(auth: Auth) {
   return token
 }
 
-export const loader: Loader = async ({ request }): Promise<unknown> => {
+export const loader: LoaderFunction = async ({ request }): Promise<unknown> => {
   const session = await getSession(request.headers.get('Cookie'))
   const url = new URL(request.url)
   const code = url.searchParams.get('code')
