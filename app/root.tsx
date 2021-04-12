@@ -6,8 +6,8 @@ import { Link } from 'react-router-dom'
 import firebase from 'firebase/app'
 import 'firebase/auth'
 
-import tailwind from 'css:./styles/tailwind.css'
-import styles from 'css:./styles/global.css'
+import tailwind from './styles/tailwind.css'
+import styles from './styles/global.css'
 
 export const links: LinksFunction = () => {
   return [

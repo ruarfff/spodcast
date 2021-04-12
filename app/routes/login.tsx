@@ -1,10 +1,10 @@
 import React from 'react'
-import { Loader, redirect } from '@remix-run/data'
+import { LoaderFunction, redirect } from '@remix-run/node'
 import crypto from 'crypto'
 import spotifyClient from '../spotify/spotifyClient'
 import { getSession, commitSession } from '../sessions'
 
-export const loader: Loader = async ({ request }) => {
+export const loader: LoaderFunction = async ({ request }) => {
   const session = await getSession(request.headers.get('Cookie'))
   let state = ''
   if (session.has('state')) {
