@@ -5,5 +5,6 @@ import { RemixBrowser as Remix } from "@remix-run/react";
 // `Element | DocumentFragment | null` but React 16 allows you to pass the
 // `document` object as well. This is a bug in @types/react-dom that we can
 // safely ignore for now.
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 ReactDOM.hydrate(<Remix />, document);
