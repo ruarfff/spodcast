@@ -1,6 +1,12 @@
 import React from 'react'
 import type { LinksFunction, LoaderFunction } from '@remix-run/react'
-import { Meta, Links, Scripts, useRouteData } from '@remix-run/react'
+import {
+  Meta,
+  Links,
+  Scripts,
+  useRouteData,
+  useLiveReload,
+} from '@remix-run/react'
 import { Outlet } from 'react-router-dom'
 import { Link } from 'react-router-dom'
 import firebase from 'firebase/app'
@@ -35,6 +41,8 @@ export const loader: LoaderFunction = async () => {
 }
 
 export default function App(): JSX.Element {
+  useLiveReload()
+
   const [fireApp, setFireApp] = React.useState<firebase.app.App>()
   const [user, setUser] = React.useState<firebase.User>()
 
@@ -105,6 +113,7 @@ export function ErrorBoundary({ error }: { error: Error }): JSX.Element {
     <html lang="en">
       <head>
         <meta charSet="utf-8" />
+        <link rel="icon" href="/favicon.png" type="image/png" />
         <title>Oops!</title>
       </head>
       <body>
@@ -113,7 +122,7 @@ export function ErrorBoundary({ error }: { error: Error }): JSX.Element {
           <pre>{error.message}</pre>
           <p>
             Replace this UI with what you want users to see when your app throws
-            uncaught errors. The file is at <code>app/root.tsx</code>.
+            uncaught errors.
           </p>
         </div>
 

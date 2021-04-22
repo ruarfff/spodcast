@@ -18,17 +18,12 @@ app.all(
   "*",
   createRequestHandler({
     build: require("./build"),
-    getLoadContext() {
+    getLoadContext(req) {
       // Whatever you return here will be passed as `context` to your loaders
       // and actions.
+      return { req }
     }
   })
 );
-
-let port = process.env.PORT || 3000;
-
-app.listen(port, () => {
-  console.log(`Express server started on http://localhost:${port}`);
-});
 
 module.exports = app

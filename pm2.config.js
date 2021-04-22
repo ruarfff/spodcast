@@ -13,7 +13,7 @@ module.exports = {
     },
     {
       name: 'Remix',
-      script: 'remix run2',
+      script: 'remix run3',
       ignore_watch: ['.'],
       env: {
         NODE_ENV: 'development',
