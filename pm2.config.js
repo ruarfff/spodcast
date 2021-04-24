@@ -3,7 +3,7 @@ module.exports = {
     {
       name: 'Firebase',
       script: 'firebase emulators:start',
-      watch: ["build/assets.json"],
+      watch: ["src/functions.js"],
       watch_options: {
         followSymlinks: false,
       },

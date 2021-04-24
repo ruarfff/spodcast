@@ -8,7 +8,6 @@ import {
   useLiveReload,
 } from '@remix-run/react'
 import { Outlet } from 'react-router-dom'
-import { Link } from 'react-router-dom'
 import firebase from 'firebase/app'
 import 'firebase/auth'
 
@@ -94,12 +93,7 @@ export default function App(): JSX.Element {
           <div>
             <a href="/login">Login</a>
           </div>
-          <div>
-            <Link to="/gists">Gists</Link>
-          </div>
-          <div>
-            <Link to="/team">Team</Link>
-          </div>
+
           <p>This page was rendered at {data.date.toLocaleString()}</p>
         </footer>
         <Scripts />
@@ -120,10 +114,8 @@ export function ErrorBoundary({ error }: { error: Error }): JSX.Element {
         <div>
           <h1>App Error</h1>
           <pre>{error.message}</pre>
-          <p>
-            Replace this UI with what you want users to see when your app throws
-            uncaught errors.
-          </p>
+          <p>Sorry! Something bad happened.</p>
+          <a href="/">Go back</a>
         </div>
 
         <Scripts />
