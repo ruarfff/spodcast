@@ -37,6 +37,7 @@ export async function login(token: string): Promise<void> {
   const d = new Date().valueOf()
   const epoch = d / 1000
   console.log(epoch)
-  firebase.auth().useEmulator('http://localhost:9099/')
+  if (window.location.hostname == 'localhost')
+    firebase.auth().useEmulator('http://localhost:9099/')
   await firebase.auth().signInWithCustomToken(token.trim())
 }
