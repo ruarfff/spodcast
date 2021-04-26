@@ -8,8 +8,9 @@ import {
   useLiveReload,
 } from '@remix-run/react'
 import { Outlet } from 'react-router-dom'
-import firebase from 'firebase/app'
-import 'firebase/auth'
+import { loadConfigFromEnv } from './firebase/firebaseLoader.server'
+import { loadFirebase } from './firebase/firebaseLoader.client'
+import { User, watchUserAuth, logout } from './user'
 
 import tailwind from './styles/tailwind.css'
 import styles from './styles/global.css'
@@ -22,58 +23,30 @@ export const links: LinksFunction = () => {
 }
 
 export const loader: LoaderFunction = async () => {
+  let config = null
   if (process.env.NODE_ENV !== 'production') {
-    const config = {
-      apiKey: process.env.SPODCAST_FB_API_KEY,
-      authDomain: process.env.SPODCAST_FB_AUTH_DOMAIN,
-      projectId: process.env.SPODCAST_PROJECT_ID,
-      storageBucket: process.env.SPODCAST_STORAGE_BUCKET,
-      messagingSenderId: process.env.SPODCAST_MESSAGING_SENDER,
-      appId: process.env.SPODCAST_APP_ID,
-      measurementId: process.env.SPODCAST_MEASUREMENT_ID,
-    }
-
-    return { config, date: new Date() }
+    config = loadConfigFromEnv()
   }
 
-  return { date: new Date() }
+  return { config, date: new Date() }
 }
 
 export default function App(): JSX.Element {
   useLiveReload()
 
-  const [fireApp, setFireApp] = React.useState<firebase.app.App>()
-  const [user, setUser] = React.useState<firebase.User>()
-
+  const [user, setUser] = React.useState<User>()
+  const [loaded, setLoaded] = React.useState<boolean>(false)
   const data = useRouteData()
 
   React.useEffect(() => {
-    if (data.config) {
-      setFireApp(firebase.initializeApp(data.config))
-    } else {
-      fetch(`/__/firebase/init.json`).then((result): void => {
-        setFireApp(firebase.initializeApp(result.json()))
-      })
+    const loadApp = async () => {
+      const app = await loadFirebase(data.config)
+      watchUserAuth(app, setUser)
+      setLoaded(true)
     }
+
+    loadApp()
   }, [])
-
-  React.useEffect(() => {
-    if (fireApp) {
-      try {
-        const auth = firebase.auth()
-
-        auth.onAuthStateChanged(() => {
-          if (auth.currentUser) {
-            setUser(auth.currentUser)
-          } else {
-            setUser(undefined)
-          }
-        })
-      } catch (err) {
-        console.error(err)
-      }
-    }
-  }, [fireApp])
 
   return (
     <html lang="en">
@@ -84,16 +57,29 @@ export default function App(): JSX.Element {
       </head>
       <body>
         <div className="container mx-auto">
-          {fireApp ? <p>Initialised</p> : <p>Not initialised</p>}
-          {user ? <p>{JSON.stringify(user)}</p> : <p>Not logged in</p>}
-          {fireApp ? <Outlet /> : <p>loading</p>}
+          {user ? (
+            <div>
+              <div>
+                <button
+                  onClick={() => {
+                    logout()
+                  }}
+                >
+                  Logout
+                </button>
+              </div>
+              <p>Hello {user.displayName}</p>
+            </div>
+          ) : (
+            <div>
+              <a href="/login">Login</a>
+            </div>
+          )}
+
+          {loaded ? <Outlet /> : <h2>Loading...</h2>}
         </div>
 
         <footer>
-          <div>
-            <a href="/login">Login</a>
-          </div>
-
           <p>This page was rendered at {data.date.toLocaleString()}</p>
         </footer>
         <Scripts />

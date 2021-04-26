@@ -1,4 +1,3 @@
-import React from 'react'
 import { LoaderFunction, redirect } from '@remix-run/node'
 import crypto from 'crypto'
 import spotifyClient from '../spotify/spotifyClient'
