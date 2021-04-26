@@ -24,12 +24,22 @@ This project uses [firebase](https://firebase.google.com/) fairly heavily and wh
 
 > As I am writing this I am thinking about the fact that I have not set this up very well. It's very clunky. I will hopefully improve this and document it all better.
 
-I do need to remember how to get a service account in firebase: <https://firebase.google.com/docs/admin/setup#add_firebase_to_your_app>
-
 Locally I put it in `.creds/` which is gitignored.
 
-
 ## Configuration
+
+### Service Account
+
+- Get a service account in firebase: <https://firebase.google.com/docs/admin/setup#add_firebase_to_your_app>
+- Store it in a file in the repo called `.creds/serviceAccountKey.json`
+
+That file is ignored by git. Locally this can be used  to do asmin stuff in firebase.
+
+In prod we load it from a config.
+
+
+
+### Spotify
 
 You need to setup a Spotify app at <https://developer.spotify.com/>.
 
@@ -46,6 +56,16 @@ Need these configured in firebase to work there:
 ```bash
 firebase functions:config:set spodcast.spotify.client="${SPODCAST_AUTH_CLIENT_ID}"
  spodcast.spotify.secret="${SPODCAST_AUTH_CLIENT_SECRET}" spodcast.spotify.redirect="https://your-firebase-url/callback"
+```
+
+### Cookies
+
+```bash
+export SPODCAST_SESSION_SECRET="your-secret"
+```
+
+```bash
+firebase functions:config:set spodcast.session.secret="${SPODCAST_SESSION_SECRET}"
 ```
 
 ### Firebase locally

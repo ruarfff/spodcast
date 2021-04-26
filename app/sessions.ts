@@ -1,4 +1,5 @@
 import { createCookieSessionStorage } from '@remix-run/node'
+import { getSessionSecret } from './conf'
 
 const {
   getSession,
@@ -7,7 +8,7 @@ const {
 } = createCookieSessionStorage({
   cookie: {
     name: '__session',
-    secrets: ["r3m1xr0ck5"],
+    secrets: [getSessionSecret()],
     maxAge: 3600000,
     secure: true,
     httpOnly: true,

@@ -29,7 +29,6 @@ export async function getToken(code: string): Promise<string> {
       if (error) {
         throw reject(error)
       }
-      console.log('Received Access Token:', data.body['access_token'])
       spotifyClient.setAccessToken(data.body['access_token'])
       const refreshToken = data.body['refresh_token']
 
@@ -38,7 +37,6 @@ export async function getToken(code: string): Promise<string> {
           if (error) {
             reject(error)
           }
-          console.log('Auth code exchange result received:', userResults)
 
           const accessToken = data.body['access_token']
           const spotifyUserID = userResults.body['id']

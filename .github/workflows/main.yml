@@ -31,18 +31,18 @@ jobs:
         env:
           REMIX_REGISTRY_TOKEN: ${{ secrets.REMIX_REGISTRY_TOKEN }}
 
-      - name: Immensely Hacky .npmrc Rewrite for Firebase Deploy
-        run: 'rm .npmrc && echo "//npm.remix.run/:_authToken=${REMIX_REGISTRY_TOKEN}\n@remix-run:registry=https://npm.remix.run"'
-        shell: bash
-        env:
-          REMIX_REGISTRY_TOKEN: ${{secrets.REMIX_REGISTRY_TOKEN}}
+      # - name: Immensely Hacky .npmrc Rewrite for Firebase Deploy
+      #   run: 'rm .npmrc && echo "//npm.remix.run/:_authToken=${REMIX_REGISTRY_TOKEN}\n@remix-run:registry=https://npm.remix.run"'
+      #   shell: bash
+      #   env:
+      #     REMIX_REGISTRY_TOKEN: ${{secrets.REMIX_REGISTRY_TOKEN}}
 
-      - name: Deploy App
-        uses: FirebaseExtended/action-hosting-deploy@v0
-        with:
-          repoToken: '${{ secrets.GITHUB_TOKEN }}'
-          firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_SPODCAST_CD96F }}'
-          channelId: live
-          projectId: spodcast-cd96f
-        env:
-          FIREBASE_CLI_PREVIEWS: hostingchannels
+      # - name: Deploy App
+      #   uses: FirebaseExtended/action-hosting-deploy@v0
+      #   with:
+      #     repoToken: '${{ secrets.GITHUB_TOKEN }}'
+      #     firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_SPODCAST_CD96F }}'
+      #     channelId: live
+      #     projectId: spodcast-cd96f
+      #   env:
+      #     FIREBASE_CLI_PREVIEWS: hostingchannels

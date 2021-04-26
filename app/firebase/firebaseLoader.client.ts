@@ -11,8 +11,9 @@ export async function loadFirebase(
     app = firebase.initializeApp(config)
   } else {
     const result = await fetch(`/__/firebase/init.json`)
+    const config = await result.json()
 
-    app = firebase.initializeApp(result.json())
+    app = firebase.initializeApp(config)
   }
   firebase.analytics()
 

@@ -10,9 +10,7 @@ export function watchUserAuth(
   const auth = authClient.auth()
 
   auth.onAuthStateChanged(() => {
-    console.log('Loading User')
     if (auth.currentUser) {
-      console.log('Have User')
       const { uid, displayName, photoURL, email } = auth.currentUser
       const user: User = {
         uid,
@@ -22,7 +20,6 @@ export function watchUserAuth(
       }
       callback(user)
     } else {
-      console.log('No User')
       callback(undefined)
     }
   })
@@ -33,10 +30,8 @@ export async function logout(): Promise<void> {
 }
 
 export async function login(token: string): Promise<void> {
-  console.log(token)
   const d = new Date().valueOf()
   const epoch = d / 1000
-  console.log(epoch)
   if (window.location.hostname == 'localhost')
     firebase.auth().useEmulator('http://localhost:9099/')
   await firebase.auth().signInWithCustomToken(token.trim())

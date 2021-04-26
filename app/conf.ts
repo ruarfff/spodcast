@@ -19,3 +19,10 @@ export function getSpotifyConfiguration(): SpotifyConfiguration {
     redirectUri: functions.config().spodcast.spotify.redirect,
   }
 }
+
+export function getSessionSecret(): string {
+  if (process.env.NODE_ENV !== 'production') {
+    return process.env.SPODCAST_SESSION_SECRET || 'r3m1xr0ck5'
+  }
+  return functions.config().spodcast.session.secret
+}
