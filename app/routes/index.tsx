@@ -3,8 +3,8 @@ import { useRouteData } from '@remix-run/react'
 
 export const meta: MetaFunction = () => {
   return {
-    title: 'Remix Starter',
-    description: 'Welcome to remix!',
+    title: 'Spodcast',
+    description: 'Manage your Spotify podcasts',
   }
 }
 
