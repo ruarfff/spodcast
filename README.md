@@ -24,6 +24,44 @@ This project uses [firebase](https://firebase.google.com/) fairly heavily and wh
 
 > As I am writing this I am thinking about the fact that I have not set this up very well. It's very clunky. I will hopefully improve this and document it all better.
 
+I do need to remember how to get a service account in firebase: <https://firebase.google.com/docs/admin/setup#add_firebase_to_your_app>
+
+Locally I put it in `.creds/` which is gitignored.
+
+
+## Configuration
+
+You need to setup a Spotify app at <https://developer.spotify.com/>.
+
+In the [applications dashboard](https://developer.spotify.com/dashboard/applications) you can find the client id, the client secret and you can configured allowed redirect URLs. You will need one redirect for local development i.e. <http://localhost:5000/callback>. You will need another for your production url. Set those values and environment variables:
+
+```bash
+export SPODCAST_AUTH_CLIENT_ID="your-client-id"
+export SPODCAST_AUTH_CLIENT_SECRET="your-client-secret"
+export SPODCAST_AUTH_REDIRECT_URL="http://localhost:5000/callback"
+```
+
+Need these configured in firebase to work there:
+
+```bash
+firebase functions:config:set spodcast.spotify.client="${SPODCAST_AUTH_CLIENT_ID}"
+ spodcast.spotify.secret="${SPODCAST_AUTH_CLIENT_SECRET}" spodcast.spotify.redirect="https://your-firebase-url/callback"
+```
+
+### Firebase locally
+
+This project will automatically load the firebase config when deployed. To control the firebase config locally you need to add the firebase configuration values to these environment variables.
+
+```bash
+export SPODCAST_FB_API_KEY=""
+export SPODCAST_FB_AUTH_DOMAIN=""
+export SPODCAST_PROJECT_ID=""
+export SPODCAST_STORAGE_BUCKET=""
+export SPODCAST_MESSAGING_SENDER=""
+export SPODCAST_APP_ID=""
+export SPODCAST_MEASUREMENT_ID=""
+```
+
 ## Documentation
 
 Detailed documentation for Remix [is available at remix.run](https://remix.run/dashboard/docs).
