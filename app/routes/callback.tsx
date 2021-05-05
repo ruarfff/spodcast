@@ -1,10 +1,10 @@
+import type { LoaderFunction } from "remix";
+import { useRouteData, json } from "remix";
 import React from 'react'
-import { LoaderFunction, json } from '@remix-run/node'
-import { useRouteData } from '@remix-run/react'
 import { useNavigate } from 'react-router-dom'
+import { getToken } from '../firebase/firebaseLoader.server'
 import { getSession } from '../sessions'
 import { login } from '../user'
-import { getToken } from '../firebase/firebaseLoader.server'
 
 export const loader: LoaderFunction = async ({ request }): Promise<unknown> => {
   const session = await getSession(request.headers.get('Cookie'))

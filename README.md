@@ -4,7 +4,7 @@ Spotify podcast manager because the Spotify desktop podcast management experienc
 
 ## Development
 
-Because I like to blow money I am using [remix](https://remix.run). This unfortunately means you need to have a remix license to build this and you need to set your remix registry token in an environment variable called `REMIX_REGISTRY_TOKEN`.
+Because I like to spend money I am using [remix](https://remix.run). This unfortunately means you need to have a remix license to build this and you need to set your remix registry token in an environment variable called `REMIX_REGISTRY_TOKEN`.
 
 Then, install all dependencies using `npm`:
 

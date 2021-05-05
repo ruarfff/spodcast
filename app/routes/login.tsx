@@ -1,4 +1,5 @@
-import { LoaderFunction, redirect } from '@remix-run/node'
+import type { LoaderFunction } from "remix";
+import { redirect} from "remix";
 import crypto from 'crypto'
 import spotifyClient from '../spotify/spotifyClient'
 import { getSession, commitSession } from '../sessions'

@@ -1,5 +1,5 @@
-import type { MetaFunction, LoaderFunction } from '@remix-run/react'
-import { useRouteData } from '@remix-run/react'
+import type { MetaFunction, LinksFunction, LoaderFunction } from "remix";
+import { useRouteData } from "remix";
 
 export const meta: MetaFunction = () => {
   return {
@@ -16,7 +16,7 @@ export default function Index(): JSX.Element {
   const data = useRouteData()
 
   return (
-    <div style={{ textAlign: 'center', padding: 20 }}>
+    <div style={{ textAlign: 'center', padding: 20 }} className="bg-green-500">
       <h2>Welcome to Remix!</h2>
       <p>
         <a href="https://remix.run/dashboard/docs">Check out the docs</a> to get

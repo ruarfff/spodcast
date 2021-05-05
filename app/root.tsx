@@ -5,7 +5,7 @@ import {
   Links,
   Scripts,
   useRouteData,
-  useLiveReload,
+  LiveReload,
 } from '@remix-run/react'
 import { Outlet } from 'react-router-dom'
 import { loadConfigFromEnv } from './firebase/firebaseLoader.server'
@@ -13,12 +13,11 @@ import { loadFirebase } from './firebase/firebaseLoader.client'
 import { User, watchUserAuth, logout } from './user'
 
 import tailwind from './styles/tailwind.css'
-import styles from './styles/global.css'
 
 export const links: LinksFunction = () => {
   return [
     { rel: 'stylesheet', href: tailwind },
-    { rel: 'stylesheet', href: styles },
+
   ]
 }
 
@@ -32,8 +31,6 @@ export const loader: LoaderFunction = async () => {
 }
 
 export default function App(): JSX.Element {
-  useLiveReload()
-
   const [user, setUser] = React.useState<User>()
   const [loaded, setLoaded] = React.useState<boolean>(false)
   const data = useRouteData()
@@ -49,14 +46,14 @@ export default function App(): JSX.Element {
   }, [])
 
   return (
-    <html lang="en">
+    <html lang="en" className="dark">
       <head>
         <meta charSet="utf-8" />
         <Meta />
         <Links />
       </head>
       <body>
-        <div className="container mx-auto">
+        <div className="container mx-auto dark:bg-black">
           {user ? (
             <div>
               <div>
@@ -83,6 +80,7 @@ export default function App(): JSX.Element {
           <p>This page was rendered at {data.date.toLocaleString()}</p>
         </footer>
         <Scripts />
+	{process.env.NODE_ENV === "development" && <LiveReload />}
       </body>
     </html>
   )
