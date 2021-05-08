@@ -1,24 +1,20 @@
-import React from 'react'
 import type { LinksFunction, LoaderFunction } from '@remix-run/react'
 import {
-  Meta,
   Links,
-  Scripts,
-  useRouteData,
   LiveReload,
+  Meta,
+  Scripts,
+  useRouteData
 } from '@remix-run/react'
+import React from 'react'
 import { Outlet } from 'react-router-dom'
-import { loadConfigFromEnv } from './firebase/firebaseLoader.server'
 import { loadFirebase } from './firebase/firebaseLoader.client'
-import { User, watchUserAuth, logout } from './user'
-
+import { loadConfigFromEnv } from './firebase/firebaseLoader.server'
 import tailwind from './styles/tailwind.css'
+import { logout, User, watchUserAuth } from './user'
 
 export const links: LinksFunction = () => {
-  return [
-    { rel: 'stylesheet', href: tailwind },
-
-  ]
+  return [{ rel: 'stylesheet', href: tailwind }]
 }
 
 export const loader: LoaderFunction = async () => {
@@ -28,6 +24,23 @@ export const loader: LoaderFunction = async () => {
   }
 
   return { config, date: new Date() }
+}
+
+function Document({ children }: { children: React.ReactNode }) {
+  return (
+    <html lang="en" className="dark">
+      <head>
+        <meta charSet="utf-8" />
+        <Meta />
+        <Links />
+      </head>
+      <body>
+        {children}
+        <Scripts />
+        {process.env.NODE_ENV === 'development' && <LiveReload />}
+      </body>
+    </html>
+  )
 }
 
 export default function App(): JSX.Element {
@@ -46,64 +59,46 @@ export default function App(): JSX.Element {
   }, [])
 
   return (
-    <html lang="en" className="dark">
-      <head>
-        <meta charSet="utf-8" />
-        <Meta />
-        <Links />
-      </head>
-      <body>
-        <div className="container mx-auto dark:bg-black">
-          {user ? (
+    <Document>
+      <div className="container mx-auto dark:bg-black">
+        {user ? (
+          <div>
             <div>
-              <div>
-                <button
-                  onClick={() => {
-                    logout()
-                  }}
-                >
-                  Logout
-                </button>
-              </div>
-              <p>Hello {user.displayName}</p>
+              <button
+                onClick={() => {
+                  logout()
+                }}
+              >
+                Logout
+              </button>
             </div>
-          ) : (
-            <div>
-              <a href="/login">Login</a>
-            </div>
-          )}
+            <p>Hello {user.displayName}</p>
+          </div>
+        ) : (
+          <div>
+            <a href="/login">Login</a>
+          </div>
+        )}
 
-          {loaded ? <Outlet /> : <h2>Loading...</h2>}
-        </div>
+        {loaded ? <Outlet /> : <h2>Loading...</h2>}
+      </div>
 
-        <footer>
-          <p>This page was rendered at {data.date.toLocaleString()}</p>
-        </footer>
-        <Scripts />
-	{process.env.NODE_ENV === "development" && <LiveReload />}
-      </body>
-    </html>
+      <footer>
+        <p>This page was rendered at {data.date.toLocaleString()}</p>
+      </footer>
+    </Document>
   )
 }
 
 export function ErrorBoundary({ error }: { error: Error }): JSX.Element {
   return (
-    <html lang="en">
-      <head>
-        <meta charSet="utf-8" />
-        <link rel="icon" href="/favicon.png" type="image/png" />
-        <title>Oops!</title>
-      </head>
-      <body>
-        <div>
-          <h1>App Error</h1>
-          <pre>{error.message}</pre>
-          <p>Sorry! Something bad happened.</p>
-          <a href="/">Go back</a>
-        </div>
-
-        <Scripts />
-      </body>
-    </html>
+    <Document>
+      <div>
+        <h1>App Error</h1>
+        <pre>{error.message}</pre>
+        <p>Sorry! Something bad happened.</p>
+        <a href="/">Go back</a>
+      </div>
+    </Document>
   )
 }

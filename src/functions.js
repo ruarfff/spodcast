@@ -1,7 +1,11 @@
 const admin = require('firebase-admin')
 const functions = require('firebase-functions')
 const appServer = require('../server')
-
+/**
+ * The README describes how to setup a service account.
+ * A service account is needed here to support custom auth with firebase.
+ * If not using custom auth, just remove the loading of the SA and call admin.initializeApp() with no args.
+ */
 if (process.env.NODE_ENV !== 'production') {
   const serviceAccount = require('../.creds/serviceAccountKey.json')
   admin.initializeApp({
