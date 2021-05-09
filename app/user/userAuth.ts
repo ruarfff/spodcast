@@ -9,14 +9,17 @@ export function watchUserAuth(
 ): void {
   const auth = authClient.auth()
 
-  auth.onAuthStateChanged(() => {
+  auth.onAuthStateChanged(async () => {
     if (auth.currentUser) {
       const { uid, displayName, photoURL, email } = auth.currentUser
+      const idToken = await auth.currentUser.getIdToken()
+
       const user: User = {
         uid,
         displayName,
         photoURL,
         email,
+        idToken,
       }
       callback(user)
     } else {
@@ -29,10 +32,10 @@ export async function logout(): Promise<void> {
   await firebase.auth().signOut()
 }
 
-export async function login(token: string): Promise<void> {
-  const d = new Date().valueOf()
-  const epoch = d / 1000
+export async function login(
+  token: string
+): Promise<firebase.auth.UserCredential> {
   if (window.location.hostname == 'localhost')
     firebase.auth().useEmulator('http://localhost:9099/')
-  await firebase.auth().signInWithCustomToken(token.trim())
+  return firebase.auth().signInWithCustomToken(token.trim())
 }

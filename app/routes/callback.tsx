@@ -1,8 +1,8 @@
-import type { LoaderFunction } from "remix";
-import { useRouteData, json } from "remix";
 import React from 'react'
 import { useNavigate } from 'react-router-dom'
-import { getToken } from '../firebase/firebaseLoader.server'
+import type { LoaderFunction } from 'remix'
+import { json, useRouteData } from 'remix'
+import { getFirebaseTokenFromAuthCode } from '../firebase/firebaseLoader.server'
 import { getSession } from '../sessions'
 import { login } from '../user'
 
@@ -10,16 +10,15 @@ export const loader: LoaderFunction = async ({ request }): Promise<unknown> => {
   const session = await getSession(request.headers.get('Cookie'))
   const url = new URL(request.url)
   const code = url.searchParams.get('code')
-  let state = ''
+
   if (session.has('state')) {
-    state = session.get('state')
+    session.unset('state')
   }
 
   try {
     if (code) {
-      const firebaseToken = await getToken(code)
-
-      return json({ state, token: firebaseToken })
+      const firebaseToken = await getFirebaseTokenFromAuthCode(code)
+      return json({ token: firebaseToken })
     }
   } catch (err) {
     return json({ err })

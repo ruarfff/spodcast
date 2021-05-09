@@ -1,13 +1,7 @@
-import type { LinksFunction, LoaderFunction } from '@remix-run/react'
-import {
-  Links,
-  LiveReload,
-  Meta,
-  Scripts,
-  useRouteData
-} from '@remix-run/react'
 import React from 'react'
 import { Outlet } from 'react-router-dom'
+import type { LinksFunction, LoaderFunction } from 'remix'
+import { Links, LiveReload, Meta, Scripts, useRouteData } from 'remix'
 import { loadFirebase } from './firebase/firebaseLoader.client'
 import { loadConfigFromEnv } from './firebase/firebaseLoader.server'
 import tailwind from './styles/tailwind.css'
@@ -57,6 +51,25 @@ export default function App(): JSX.Element {
 
     loadApp()
   }, [])
+
+  React.useEffect(() => {
+    const loadSession = async () => {
+      await fetch('/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          idToken: user?.idToken?.toString() || '',
+          uid: user?.uid,
+        }),
+      })
+    }
+
+    if (user) {
+      loadSession()
+    }
+  }, [user])
 
   return (
     <Document>

@@ -1,6 +1,6 @@
 import admin from 'firebase-admin'
+import { getCurrentUser, getToken } from '../spotify/spotifyClient.server'
 import FirebaseConfig from './FirebaseConfig'
-import spotifyClient from '../spotify/spotifyClient'
 
 interface Auth {
   spotifyUserID: string
@@ -9,6 +9,8 @@ interface Auth {
   email: string
   accessToken: string
   refreshToken: string
+  expiresAt: number
+  expiresIn: number
 }
 
 export function loadConfigFromEnv(): FirebaseConfig {
@@ -23,47 +25,35 @@ export function loadConfigFromEnv(): FirebaseConfig {
   }
 }
 
-export async function getToken(code: string): Promise<string> {
-  const auth: Auth = await new Promise((resolve, reject) => {
-    spotifyClient.authorizationCodeGrant(code, (error, data) => {
-      if (error) {
-        throw reject(error)
-      }
-      spotifyClient.setAccessToken(data.body['access_token'])
-      const refreshToken = data.body['refresh_token']
+export async function getFirebaseTokenFromAuthCode(
+  code: string
+): Promise<string> {
+  const { accessToken, refreshToken, expiresAt, expiresIn } = await getToken(
+    code
+  )
 
-      spotifyClient.getMe(
-        async (error, userResults): Promise<void> => {
-          if (error) {
-            reject(error)
-          }
+  const user = await getCurrentUser(accessToken)
 
-          const accessToken = data.body['access_token']
-          const spotifyUserID = userResults.body['id']
-          const photoURL = userResults.body['images']
-            ? userResults.body['images'][0]['url']
-            : ''
-          const displayName = userResults.body['display_name'] || ''
-          const email = userResults.body['email']
+  const spotifyUserID = user['id']
+  const photoURL = user['images'] ? user['images'][0]['url'] : ''
+  const displayName = user['display_name'] || ''
+  const email = user['email']
 
-          resolve({
-            accessToken,
-            refreshToken,
-            spotifyUserID,
-            displayName,
-            photoURL,
-            email,
-          })
-        }
-      )
-    })
-  })
+  const auth = {
+    spotifyUserID,
+    displayName,
+    photoURL,
+    email,
+    accessToken,
+    refreshToken,
+    expiresAt,
+    expiresIn,
+  }
 
   return await createFirebaseAccount(auth)
 }
 
 async function createFirebaseAccount(auth: Auth): Promise<string> {
-  // The UID we'll assign to the user.
   const uid = `spotify:${auth.spotifyUserID}`
 
   const db = admin.firestore()
@@ -73,6 +63,8 @@ async function createFirebaseAccount(auth: Auth): Promise<string> {
   const tokenSaveTask = docRef.set({
     accessToken: auth.accessToken,
     refreshToken: auth.refreshToken,
+    expiresAt: auth.expiresAt,
+    expiresIn: auth.expiresIn,
   })
 
   // Create or update the user account.
@@ -85,7 +77,7 @@ async function createFirebaseAccount(auth: Auth): Promise<string> {
       emailVerified: true,
     })
     .catch((error) => {
-      // If user does not exists we create it.
+      // If user does not exist, create it.
       if (error.code === 'auth/user-not-found') {
         return admin.auth().createUser({
           uid: uid,
@@ -98,8 +90,6 @@ async function createFirebaseAccount(auth: Auth): Promise<string> {
       throw error
     })
 
-  // Wait for all async tasks to complete, then generate and return a custom auth token.
   await Promise.all([userCreationTask, tokenSaveTask])
-  // Create a Firebase custom auth token.
   return await admin.auth().createCustomToken(uid)
 }
