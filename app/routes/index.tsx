@@ -1,5 +1,4 @@
-import { json, LoaderFunction, MetaFunction, useRouteData } from 'remix'
-import { getSession } from '../sessions'
+import { MetaFunction } from 'remix'
 
 export const meta: MetaFunction = () => {
   return {
@@ -8,23 +7,11 @@ export const meta: MetaFunction = () => {
   }
 }
 
-export const loader: LoaderFunction = async ({ request }): Promise<unknown> => {
-  const session = await getSession(request.headers.get('Cookie'))
-  let uid = ''
-  if (session.has('uid')) {
-    uid = session.get('uid')
-    return json(uid)
-  }
-  return json([])
-}
-
 export default function Index(): JSX.Element {
-  const data = useRouteData()
-
   return (
     <div>
       <h1>Hello</h1>
-      <p>{JSON.stringify(data)}</p>
+      <a href="/tracks">Tracks</a>
     </div>
   )
 }

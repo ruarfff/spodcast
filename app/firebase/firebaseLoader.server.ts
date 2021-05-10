@@ -1,5 +1,5 @@
 import admin from 'firebase-admin'
-import { getCurrentUser, getToken } from '../spotify/spotifyClient.server'
+import { getAuth } from '../spotify/spotifyClient.server'
 import FirebaseConfig from './FirebaseConfig'
 
 interface Auth {
@@ -28,11 +28,13 @@ export function loadConfigFromEnv(): FirebaseConfig {
 export async function getFirebaseTokenFromAuthCode(
   code: string
 ): Promise<string> {
-  const { accessToken, refreshToken, expiresAt, expiresIn } = await getToken(
-    code
-  )
-
-  const user = await getCurrentUser(accessToken)
+  const {
+    accessToken,
+    refreshToken,
+    expiresAt,
+    expiresIn,
+    user,
+  } = await getAuth(code)
 
   const spotifyUserID = user['id']
   const photoURL = user['images'] ? user['images'][0]['url'] : ''
