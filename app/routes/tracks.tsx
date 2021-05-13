@@ -1,6 +1,6 @@
 import { json, LoaderFunction, MetaFunction, useRouteData } from 'remix'
 import { getSession } from '../sessions'
-import { getRecommendations } from '../spotify/spotifyClient.server'
+import { getShows } from '../spotify/spotifyClient.server'
 
 export const meta: MetaFunction = () => {
   return {
@@ -14,7 +14,7 @@ export const loader: LoaderFunction = async ({ request }): Promise<unknown> => {
   let uid = ''
   if (session.has('uid')) {
     uid = session.get('uid')
-    const recs = await getRecommendations(uid)
+    const recs = await getShows(uid)
     return json(recs)
   }
   return json([])

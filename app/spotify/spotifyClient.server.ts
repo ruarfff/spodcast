@@ -78,14 +78,10 @@ export const createAuthorizeURL = (scopes: string[], state: string): string => {
   return spotifyClient.createAuthorizeURL(scopes, state)
 }
 
-export const getRecommendations = async (uid: string): Promise<any> => {
+export const getShows = async (uid: string): Promise<any> => {
   const client = await getSpotifyClient(uid)
 
-  const { body } = await client.getNewReleases({
-    limit: 5,
-    offset: 0,
-    country: 'SE',
-  })
+  const { body } = await client.getMySavedShows()
 
   return body
 }

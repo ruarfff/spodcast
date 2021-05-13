@@ -26,7 +26,7 @@ export const loader: LoaderFunction = async ({ request }) => {
     session.set('state', state)
   }
 
-  const scopes = ['user-read-private', 'user-read-email']
+  const scopes = ['user-read-private', 'user-read-email', 'user-library-read']
   const authorizeURL = createAuthorizeURL(scopes, state.toString())
 
   return redirect(authorizeURL, {
