@@ -5,6 +5,8 @@ node_modules
 /server/build
 /public/build
 
+/app/styles
+
 .npmrc
 *.log
 *.cache
