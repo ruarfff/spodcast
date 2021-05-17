@@ -3,7 +3,7 @@ module.exports = {
     {
       name: 'Firebase',
       script: 'firebase emulators:start',
-      watch: ["src/functions.js"],
+      watch: ['src/functions.js'],
       watch_options: {
         followSymlinks: false,
       },
@@ -14,6 +14,14 @@ module.exports = {
     {
       name: 'Remix',
       script: 'remix dev',
+      ignore_watch: ['.'],
+      env: {
+        NODE_ENV: 'development',
+      },
+    },
+    {
+      name: 'Postcss',
+      script: 'npm run css:watch',
       ignore_watch: ['.'],
       env: {
         NODE_ENV: 'development',

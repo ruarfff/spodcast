@@ -1,0 +1,17 @@
+:focus:not(:focus-visible) {
+  outline: none;
+}
+
+body {
+  font-family: Century Gothic, Futura, sans-serif;
+}
+
+:root {
+  color-scheme: dark light;
+}
+
+footer {
+  text-align: center;
+  color: #ccc;
+  padding-top: 80px;
+}

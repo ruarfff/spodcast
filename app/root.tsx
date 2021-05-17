@@ -4,11 +4,15 @@ import type { LinksFunction, LoaderFunction } from 'remix'
 import { Links, LiveReload, Meta, Scripts, useRouteData } from 'remix'
 import { loadFirebase } from './firebase/firebaseLoader.client'
 import { loadConfigFromEnv } from './firebase/firebaseLoader.server'
+import styles from './styles/app.css'
 import tailwind from './styles/tailwind.css'
 import { logout, User, watchUserAuth } from './user'
 
 export const links: LinksFunction = () => {
-  return [{ rel: 'stylesheet', href: tailwind }]
+  return [
+    { rel: 'stylesheet', href: tailwind },
+    { rel: 'stylesheet', href: styles },
+  ]
 }
 
 export const loader: LoaderFunction = async () => {
@@ -25,6 +29,7 @@ function Document({ children }: { children: React.ReactNode }) {
     <html lang="en" className="dark">
       <head>
         <meta charSet="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
         <Meta />
         <Links />
       </head>
