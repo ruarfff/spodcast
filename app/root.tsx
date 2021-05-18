@@ -33,7 +33,7 @@ function Document({ children }: { children: React.ReactNode }) {
         <Meta />
         <Links />
       </head>
-      <body>
+      <body className="bg-black text-gray-300 min-h-screen p-10">
         {children}
         <Scripts />
         {process.env.NODE_ENV === 'development' && <LiveReload />}

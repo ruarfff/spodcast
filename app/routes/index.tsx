@@ -11,7 +11,7 @@ export default function Index(): JSX.Element {
   return (
     <div>
       <h1>Hello</h1>
-      <a href="/tracks">Tracks</a>
+      <a href="/shows">Shows</a>
     </div>
   )
 }
