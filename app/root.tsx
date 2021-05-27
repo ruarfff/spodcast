@@ -2,11 +2,10 @@ import React from 'react'
 import { Outlet } from 'react-router-dom'
 import type { LinksFunction, LoaderFunction } from 'remix'
 import { Links, LiveReload, Meta, Scripts, useRouteData } from 'remix'
-import { loadFirebase } from './firebase/firebaseLoader.client'
-import { loadConfigFromEnv } from './firebase/firebaseLoader.server'
+import { loadConfigFromEnv } from './firebase/firebase.server'
+import { loadFirebase } from './firebase/firebase.client'
 import styles from './styles/app.css'
 import tailwind from './styles/tailwind.css'
-import { logout, User, watchUserAuth } from './user'
 
 export const links: LinksFunction = () => {
   return [
@@ -43,67 +42,23 @@ function Document({ children }: { children: React.ReactNode }) {
 }
 
 export default function App(): JSX.Element {
-  const [user, setUser] = React.useState<User>()
   const [loaded, setLoaded] = React.useState<boolean>(false)
   const data = useRouteData()
 
   React.useEffect(() => {
     const loadApp = async () => {
-      const app = await loadFirebase(data.config)
-      watchUserAuth(app, setUser)
+      await loadFirebase(data.config)
       setLoaded(true)
     }
 
     loadApp()
   }, [])
 
-  React.useEffect(() => {
-    const loadSession = async () => {
-      await fetch('/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          idToken: user?.idToken?.toString() || '',
-          uid: user?.uid,
-        }),
-      })
-    }
-
-    if (user) {
-      loadSession()
-    }
-  }, [user])
-
   return (
     <Document>
       <div className="container mx-auto dark:bg-black">
-        {user ? (
-          <div>
-            <div>
-              <button
-                onClick={() => {
-                  logout()
-                }}
-              >
-                Logout
-              </button>
-            </div>
-            <p>Hello {user.displayName}</p>
-          </div>
-        ) : (
-          <div>
-            <a href="/login">Login</a>
-          </div>
-        )}
-
         {loaded ? <Outlet /> : <h2>Loading...</h2>}
       </div>
-
-      <footer>
-        <p>This page was rendered at {data.date.toLocaleString()}</p>
-      </footer>
     </Document>
   )
 }

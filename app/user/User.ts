@@ -1,7 +1,6 @@
 export default interface User {
   uid: string
-  displayName: string | null
-  photoURL: string | null
-  email: string | null
-  idToken: string | null
+  displayName?: string
+  photoURL?: string
+  email?: string
 }

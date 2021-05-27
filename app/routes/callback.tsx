@@ -1,9 +1,15 @@
 import React from 'react'
-import { useNavigate } from 'react-router-dom'
-import type { LoaderFunction } from 'remix'
-import { json, useRouteData } from 'remix'
-import { getFirebaseTokenFromAuthCode } from '../firebase/firebaseLoader.server'
-import { getSession } from '../sessions'
+import {
+  ActionFunction,
+  json,
+  LoaderFunction,
+  redirect,
+  useRouteData
+} from 'remix'
+import { getIdToken } from '../firebase/firebase.client'
+import { getFirebaseTokenFromAuthCode } from '../firebase/firebase.server'
+import { commitSession, getSession } from '../sessions'
+import { createUserSession } from '../sessions.server'
 import { login } from '../user'
 
 export const loader: LoaderFunction = async ({ request }): Promise<unknown> => {
@@ -20,34 +26,64 @@ export const loader: LoaderFunction = async ({ request }): Promise<unknown> => {
       const firebaseToken = await getFirebaseTokenFromAuthCode(code)
       return json({ token: firebaseToken })
     }
+    throw new Error('No code provided to callback')
   } catch (err) {
-    return json({ err })
+    const session = await getSession(request.headers.get('Cookie'))
+    session.set('error', err.message)
+    const cookie = await commitSession(session)
+
+    return redirect(`/login`, { headers: { 'Set-Cookie': cookie } })
+  }
+}
+
+export const action: ActionFunction = async ({ request, context }) => {
+  const { body } = context.req
+
+  try {
+    const cookie = await createUserSession(body.idToken)
+    return redirect('/dashboard', {
+      headers: {
+        'Set-Cookie': cookie,
+      },
+    })
+  } catch (err) {
+    const session = await getSession(request.headers.get('Cookie'))
+    session.set('error', err.message)
+    const cookie = await commitSession(session)
+
+    return redirect(`/login`, { headers: { 'Set-Cookie': cookie } })
   }
 }
 
 export default function Callback(): JSX.Element {
   const data = useRouteData()
-  const navigate = useNavigate()
 
   React.useEffect(() => {
     const handleCallback = async () => {
       if (data.token) {
-        await login(data.token)
-        navigate('/')
+        const { user } = await login(data.token)
+        const idToken = await getIdToken()
+
+        console.log(idToken)
+
+        const res = await fetch('/callback', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            idToken: idToken?.toString() || '',
+            uid: user?.uid,
+          }),
+        })
+        if (res.redirected) {
+          window.location.href = res.url
+        }
       }
     }
 
     handleCallback()
   }, [data.token])
 
-  if (data.err) {
-    return (
-      <div>
-        <h2>Callback Err</h2>
-        <p>{JSON.stringify(data.err)}</p>
-      </div>
-    )
-  }
-
-  return <h2>Logging in</h2>
+  return <h2>Logging in...</h2>
 }

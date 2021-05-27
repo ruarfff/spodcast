@@ -25,16 +25,29 @@ export function loadConfigFromEnv(): FirebaseConfig {
   }
 }
 
+export async function verifySessionCookie(
+  token: string
+): Promise<admin.auth.DecodedIdToken> {
+  const tokenUser = await admin.auth().verifySessionCookie(token, true)
+
+  return tokenUser
+}
+
+export async function getSessionToken(idToken: string): Promise<unknown> {
+  const auth = admin.auth()
+  const decodedToken = await auth.verifyIdToken(idToken)
+  if (new Date().getTime() / 1000 - decodedToken.auth_time > 5 * 60) {
+    throw new Error('Recent sign in required')
+  }
+  const twoWeeks = 60 * 60 * 24 * 14 * 1000
+  return auth.createSessionCookie(idToken, { expiresIn: twoWeeks })
+}
+
 export async function getFirebaseTokenFromAuthCode(
   code: string
 ): Promise<string> {
-  const {
-    accessToken,
-    refreshToken,
-    expiresAt,
-    expiresIn,
-    user,
-  } = await getAuth(code)
+  const { accessToken, refreshToken, expiresAt, expiresIn, user } =
+    await getAuth(code)
 
   const spotifyUserID = user['id']
   const photoURL = user['images'] ? user['images'][0]['url'] : ''
@@ -94,4 +107,8 @@ async function createFirebaseAccount(auth: Auth): Promise<string> {
 
   await Promise.all([userCreationTask, tokenSaveTask])
   return await admin.auth().createCustomToken(uid)
+}
+
+export async function getUser(uid: string): Promise<admin.auth.UserRecord> {
+  return admin.auth().getUser(uid)
 }

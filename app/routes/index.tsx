@@ -10,8 +10,7 @@ export const meta: MetaFunction = () => {
 export default function Index(): JSX.Element {
   return (
     <div>
-      <h1>Hello</h1>
-      <a href="/shows">Shows</a>
+      <h1>Homepage</h1>
     </div>
   )
 }
