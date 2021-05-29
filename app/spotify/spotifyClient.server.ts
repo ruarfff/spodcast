@@ -27,19 +27,23 @@ export const getSpotifyClient = async (uid: string): Promise<SpotifyWebApi> => {
       const res = await fetch('https://accounts.spotify.com/api/token', {
         method: 'POST',
         body: new URLSearchParams(params),
+        headers: {
+          'Authorization': `Basic ${Buffer.from(
+            clientId + ':' + clientSecret
+          ).toString('base64')}`
+        }
       })
       const updatedAuth = await res.json()
       const accessToken = updatedAuth['access_token']
       const expiresAt = Date.now() + updatedAuth['expires_in'] * 1000
       const expiresIn = updatedAuth['expires_in']
+
       await authDocRef.set(
         { accessToken, expiresAt, expiresIn },
         { merge: true }
       )
-      console.log('Setting refreshed token:', accessToken)
       spotifyClient.setAccessToken(accessToken)
     } else {
-      console.log('Setting token:', auth?.accessToken)
       spotifyClient.setAccessToken(auth?.accessToken)
     }
   } else {

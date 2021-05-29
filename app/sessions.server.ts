@@ -34,7 +34,6 @@ export const requireUser = (request: Request) => {
 
     const user: User = await getUser(sessionUser.uid)
 
-    const data = { sessionUser, user }
-    return loader(data)
+    return loader(user)
   }
 }
