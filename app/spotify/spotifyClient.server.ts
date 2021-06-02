@@ -73,13 +73,10 @@ export const getAuth = async (code: string): Promise<any> => {
 }
 
 export const createAuthorizeURL = (scopes: string[], state: string): string => {
-  const spotifyClient = new SpotifyWebApi({
-    clientId,
-    clientSecret,
-    redirectUri,
-  })
-
-  return spotifyClient.createAuthorizeURL(scopes, state)
+  if (!redirectUri) {
+    throw new Error('Redirect URI required')
+  }
+  return `https://accounts.spotify.com/authorize?response_type=code&client_id=${clientId}${scopes ? '&scope=' + encodeURIComponent(scopes.join(' ')) : ''}&redirect_uri=${encodeURIComponent(redirectUri || '')}&state=${state}`;
 }
 
 export const getShows = async (uid: string): Promise<any> => {

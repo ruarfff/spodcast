@@ -10,7 +10,8 @@
     "clean": "rimraf ./node_modules/.cache ./build ./public/build \"./app/styles/**/*.css\"",
     "deploy": "firebase deploy",
     "start": "pm2-dev pm2.config.js",
-    "lint": "eslint --ignore-path .gitignore . --fix"
+    "lint": "eslint --ignore-path .gitignore . --fix",
+    "test": "jest"
   },
   "dependencies": {
     "@remix-run/node": "^0.17.0",
@@ -49,11 +50,13 @@
     "eslint-plugin-prettier": "^3.3.1",
     "eslint-plugin-react": "^7.22.0",
     "firebase-tools": "^9.6.1",
+    "jest": "^27.0.3",
     "pm2": "^4.5.5",
     "postcss": "^8.2.6",
     "postcss-cli": "^8.3.1",
     "prettier": "^2.2.1",
     "tailwindcss": "^2.1.2",
+    "ts-jest": "^27.0.2",
     "typescript": "^4.2.4"
   },
   "sideEffects": false,
