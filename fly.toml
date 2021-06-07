@@ -1,6 +1,6 @@
-# fly.toml file generated for quiet-leaf-5768 on 2021-06-06T16:22:18+01:00
+# fly.toml file generated for quiet-fog-2116 on 2021-06-07T12:50:56+01:00
 
-app = "quiet-leaf-5768"
+app = "quiet-fog-2116"
 
 kill_signal = "SIGINT"
 kill_timeout = 5
@@ -9,8 +9,7 @@ kill_timeout = 5
   builder = "heroku/buildpacks:20"
 
 [env]
-  PORT = "8080"
-  NODE_ENV = "production"
+  PORT = "3000"
 
 [experimental]
   allowed_public_ports = []
@@ -18,7 +17,7 @@ kill_timeout = 5
 
 [[services]]
   http_checks = []
-  internal_port = 8080
+  internal_port = 3000
   protocol = "tcp"
   script_checks = []
 
