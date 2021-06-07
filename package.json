@@ -1,7 +1,6 @@
 {
   "name": "spodcast",
   "private": true,
-  "main": "src/functions.js",
   "version": "1.0.0",
   "scripts": {
     "css:watch": "postcss styles/**/*.css --base styles --dir app/styles --w",
@@ -9,7 +8,8 @@
     "build": "npm run css:build && remix build",
     "clean": "rimraf ./node_modules/.cache ./build ./public/build \"./app/styles/**/*.css\"",
     "deploy": "flyctl deploy --build-arg REMIX_TOKEN=${REMIX_TOKEN}",
-    "start": "pm2-dev pm2.config.js",
+    "dev": "pm2-dev pm2.config.js",
+    "start": "remix-serve build",
     "lint": "eslint --ignore-path .gitignore . --fix",
     "test": "jest"
   },
