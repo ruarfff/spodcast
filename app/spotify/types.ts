@@ -15,3 +15,11 @@ export type Show = {
   uri: string
   media_type: string
 }
+
+export type Auth = {
+  accessToken: string
+  refreshToken: string
+  expiresAt: number
+  expiresIn: number
+  spotifyUser: any
+}

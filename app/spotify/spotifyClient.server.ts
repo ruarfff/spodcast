@@ -1,6 +1,7 @@
-import admin from 'firebase-admin'
 import SpotifyWebApi from 'spotify-web-api-node'
 import { getSpotifyConfiguration } from '../conf'
+import { getAuth, setAuth } from '../db'
+import { Auth } from './types'
 
 const { clientId, clientSecret, redirectUri } = getSpotifyConfiguration()
 
@@ -11,12 +12,9 @@ export const getSpotifyClient = async (uid: string): Promise<SpotifyWebApi> => {
     redirectUri,
   })
 
-  const db = admin.firestore()
-  const authDocRef = db.collection('spotifyTokens').doc(uid)
-  const authDoc = await authDocRef.get()
+  const auth = getAuth(uid)
 
-  if (authDoc.exists) {
-    const auth = authDoc.data()
+  if (auth) {
 
     if (auth?.expiresAt < Date.now()) {
       const params = {
@@ -38,10 +36,7 @@ export const getSpotifyClient = async (uid: string): Promise<SpotifyWebApi> => {
       const expiresAt = Date.now() + updatedAuth['expires_in'] * 1000
       const expiresIn = updatedAuth['expires_in']
 
-      await authDocRef.set(
-        { accessToken, expiresAt, expiresIn },
-        { merge: true }
-      )
+      setAuth(uid, { ...auth, accessToken, expiresAt, expiresIn })
       spotifyClient.setAccessToken(accessToken)
     } else {
       spotifyClient.setAccessToken(auth?.accessToken)
@@ -53,7 +48,7 @@ export const getSpotifyClient = async (uid: string): Promise<SpotifyWebApi> => {
   return spotifyClient
 }
 
-export const getAuth = async (code: string): Promise<any> => {
+export const loginSpotify = async (code: string): Promise<Auth> => {
   const spotifyClient = new SpotifyWebApi({
     clientId,
     clientSecret,
@@ -69,7 +64,7 @@ export const getAuth = async (code: string): Promise<any> => {
   spotifyClient.setAccessToken(accessToken)
   const meRes = await spotifyClient.getMe()
 
-  return { accessToken, refreshToken, expiresAt, expiresIn, user: meRes.body }
+  return { accessToken, refreshToken, expiresAt, expiresIn, spotifyUser: meRes.body }
 }
 
 export const createAuthorizeURL = (scopes: string[], state: string): string => {

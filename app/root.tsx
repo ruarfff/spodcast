@@ -1,26 +1,15 @@
 import React from 'react'
 import { Outlet } from 'react-router-dom'
-import type { LinksFunction, LoaderFunction } from 'remix'
-import { Links, LiveReload, Meta, Scripts, useRouteData } from 'remix'
-import { loadConfigFromEnv } from './firebase/firebase.server'
-import { loadFirebase } from './firebase/firebase.client'
+import type { LinksFunction } from 'remix'
+import { Links, LiveReload, Meta, Scripts } from 'remix'
 import styles from './styles/app.css'
 import tailwind from './styles/tailwind.css'
 
 export const links: LinksFunction = () => {
   return [
     { rel: 'stylesheet', href: tailwind },
-    { rel: 'stylesheet', href: styles },
+    { rel: 'stylesheet', href: styles }
   ]
-}
-
-export const loader: LoaderFunction = async () => {
-  let config = null
-  if (process.env.NODE_ENV !== 'production') {
-    config = loadConfigFromEnv()
-  }
-
-  return { config, date: new Date() }
 }
 
 function Document({ children }: { children: React.ReactNode }) {
@@ -42,22 +31,10 @@ function Document({ children }: { children: React.ReactNode }) {
 }
 
 export default function App(): JSX.Element {
-  const [loaded, setLoaded] = React.useState<boolean>(false)
-  const data = useRouteData()
-
-  React.useEffect(() => {
-    const loadApp = async () => {
-      await loadFirebase(data.config)
-      setLoaded(true)
-    }
-
-    loadApp()
-  }, [])
-
   return (
     <Document>
       <div className="container mx-auto dark:bg-black">
-        {loaded ? <Outlet /> : <h2>Loading...</h2>}
+        <Outlet />
       </div>
     </Document>
   )

@@ -1,30 +1,19 @@
 import { Request } from 'node-fetch'
 import { redirect } from 'remix'
-import {
-  getSessionToken,
-  getUser,
-  verifySessionCookie
-} from './firebase/firebase.server'
+import { getUser } from './db'
 import { commitSession, getSession } from './sessions'
-import { User } from './user'
 
-export async function createUserSession(idToken: string): Promise<string> {
-  const token = await getSessionToken(idToken)
+export async function createUserSession(uid: string): Promise<string> {
   const session = await getSession()
-  session.set('token', token)
+  session.set('uid', uid)
   return commitSession(session, { maxAge: 604_800 })
 }
 
 export async function getUserSession(request: Request) {
   const cookieSession = await getSession(request.headers.get('Cookie'))
-  const token = cookieSession.get('token')
-  if (!token) return null
-  try {
-    const tokenUser = await verifySessionCookie(token)
-    return tokenUser
-  } catch (error) {
-    return null
-  }
+  const uid = cookieSession.get('uid')
+  if (!uid) return null
+  return { uid }
 }
 
 export const requireUser = (request: Request) => {
@@ -32,7 +21,7 @@ export const requireUser = (request: Request) => {
     const sessionUser = await getUserSession(request)
     if (!sessionUser) return redirect('/login')
 
-    const user: User = await getUser(sessionUser.uid)
+    const user = getUser(sessionUser.uid)
 
     return loader(user)
   }

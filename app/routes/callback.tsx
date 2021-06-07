@@ -1,16 +1,9 @@
-import React from 'react'
-import {
-  ActionFunction,
-  json,
-  LoaderFunction,
-  redirect,
-  useRouteData
-} from 'remix'
-import { getIdToken } from '../firebase/firebase.client'
-import { getFirebaseTokenFromAuthCode } from '../firebase/firebase.server'
+import { LoaderFunction, redirect } from 'remix'
+import { setAuth, setUser } from '../db'
 import { commitSession, getSession } from '../sessions'
 import { createUserSession } from '../sessions.server'
-import { login } from '../user'
+import { loginSpotify } from '../spotify/spotifyClient.server'
+import { User } from '../user'
 
 export const loader: LoaderFunction = async ({ request }): Promise<unknown> => {
   const session = await getSession(request.headers.get('Cookie'))
@@ -23,8 +16,31 @@ export const loader: LoaderFunction = async ({ request }): Promise<unknown> => {
 
   try {
     if (code) {
-      const firebaseToken = await getFirebaseTokenFromAuthCode(code)
-      return json({ token: firebaseToken })
+      const auth = await loginSpotify(code)
+      const spotifyUser = auth.spotifyUser
+      const uid = spotifyUser['id']
+      const photoURL = spotifyUser['images']
+        ? spotifyUser['images'][0]['url']
+        : ''
+      const displayName = spotifyUser['display_name'] || ''
+      const email = spotifyUser['email']
+
+      const user: User = {
+        uid,
+        displayName,
+        photoURL,
+        email
+      }
+
+      setAuth(uid, auth)
+      setUser(user)
+
+      const cookie = await createUserSession(uid)
+      return redirect('/dashboard', {
+        headers: {
+          'Set-Cookie': cookie
+        }
+      })
     }
     throw new Error('No code provided to callback')
   } catch (err) {
@@ -36,54 +52,6 @@ export const loader: LoaderFunction = async ({ request }): Promise<unknown> => {
   }
 }
 
-export const action: ActionFunction = async ({ request, context }) => {
-  const { body } = context.req
-
-  try {
-    const cookie = await createUserSession(body.idToken)
-    return redirect('/dashboard', {
-      headers: {
-        'Set-Cookie': cookie,
-      },
-    })
-  } catch (err) {
-    const session = await getSession(request.headers.get('Cookie'))
-    session.set('error', err.message)
-    const cookie = await commitSession(session)
-
-    return redirect(`/login`, { headers: { 'Set-Cookie': cookie } })
-  }
-}
-
-export default function Callback(): JSX.Element {
-  const data = useRouteData()
-
-  React.useEffect(() => {
-    const handleCallback = async () => {
-      if (data.token) {
-        const { user } = await login(data.token)
-        const idToken = await getIdToken()
-
-        console.log(idToken)
-
-        const res = await fetch('/callback', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            idToken: idToken?.toString() || '',
-            uid: user?.uid,
-          }),
-        })
-        if (res.redirected) {
-          window.location.href = res.url
-        }
-      }
-    }
-
-    handleCallback()
-  }, [data.token])
-
-  return <h2>Logging in...</h2>
+export default function Callback() {
+  return null
 }

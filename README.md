@@ -48,7 +48,7 @@ In the [applications dashboard](https://developer.spotify.com/dashboard/applicat
 ```bash
 export SPODCAST_AUTH_CLIENT_ID="your-client-id"
 export SPODCAST_AUTH_CLIENT_SECRET="your-client-secret"
-export SPODCAST_AUTH_REDIRECT_URL="http://localhost:5000/callback"
+export SPODCAST_AUTH_REDIRECT_URL="http://localhost:3000/callback"
 ```
 
 Need these configured in firebase to work there:
