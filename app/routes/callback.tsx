@@ -1,5 +1,5 @@
 import { LoaderFunction, redirect } from 'remix'
-import { setAuth, setUser } from '../db'
+import { setAuth, createUser } from '../db'
 import { commitSession, getSession } from '../sessions'
 import { createUserSession } from '../sessions.server'
 import { loginSpotify } from '../spotify/spotifyClient.server'
@@ -33,7 +33,7 @@ export const loader: LoaderFunction = async ({ request }): Promise<unknown> => {
       }
 
       setAuth(uid, auth)
-      setUser(user)
+      createUser(user)
 
       const cookie = await createUserSession(uid)
       return redirect('/dashboard', {

@@ -1,7 +1,7 @@
-import { Request } from 'node-fetch'
+import type { Request } from 'node-fetch'
 import { redirect } from 'remix'
-import { getUser } from './db'
 import { commitSession, getSession } from './sessions'
+import { getUser } from './user'
 
 export async function createUserSession(uid: string): Promise<string> {
   const session = await getSession()
